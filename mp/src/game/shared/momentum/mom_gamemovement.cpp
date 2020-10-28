@@ -1905,6 +1905,25 @@ void CMomentumGameMovement::FullWalkMove()
         }
         return;
     }
+	
+	if (g_pGameModeSystem->GameModeIs(GAMEMODE_KZ))
+	{
+		if (player->GetGroundEntity() != nullptr)
+		{
+			// double duck/g-strafe
+			if (player->m_afButtonReleased & IN_DUCK && !player->m_Local.m_bDucked)
+			{
+				Vector newOrigin = mv->GetAbsOrigin();
+				newOrigin[2] += KZ_DOUBLE_DUCK_HEIGHT;
+				
+				trace_t pm;
+				TracePlayerBBox(newOrigin, newOrigin, PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT, pm);
+				if (pm.fraction == 1.0f)
+				{
+					mv->SetAbsOrigin(newOrigin);
+				}
+			}
+		}
 
     // If we are swimming in the water, see if we are nudging against a place we can jump up out
     //  of, and, if so, start out jump.  Otherwise, if we are not moving up, then reset jump timer to 0
