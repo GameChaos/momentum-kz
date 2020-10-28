@@ -1706,12 +1706,15 @@ void CMomentumGameMovement::CategorizePosition()
             if (!pm.m_pEnt || pm.plane.normal[2] < 0.7f)
             {
                 SetGroundEntity(nullptr);
-
-                // probably want to add a check for a +z velocity too!
-                if ((mv->m_vecVelocity.z > 0.0f) && (player->GetMoveType() != MOVETYPE_NOCLIP))
-                {
-                    player->m_surfaceFriction = 0.25f;
-                }
+				
+				if (!(g_pGameModeSystem->GameModeIs(GAMEMODE_KZ)))
+				{
+					// probably want to add a check for a +z velocity too!
+					if ((mv->m_vecVelocity.z > 0.0f) && (player->GetMoveType() != MOVETYPE_NOCLIP))
+					{
+						player->m_surfaceFriction = 0.25f;
+					}
+				}
             }
         }
         else
