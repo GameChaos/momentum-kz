@@ -159,28 +159,6 @@ void CMomentumGameMovement::WalkMove()
     Vector dest;
     trace_t pm;
     Vector forward, right, up;
-
-    if (g_pGameModeSystem->GameModeIs(GAMEMODE_KZ))
-    {
-        if (m_pPlayer->m_flStamina > 0)
-        {
-            float flRatio = (STAMINA_MAX - ((m_pPlayer->m_flStamina / 1000.0f) * STAMINA_RECOVER_RATE)) / STAMINA_MAX;
-
-            // This Goldsrc code was run with variable timesteps and it had framerate dependencies.
-            // People looking at Goldsrc for reference are usually
-            // (these days) measuring the stoppage at 60fps or greater, so we need
-            // to account for the fact that Goldsrc was applying more stopping power
-            // since it applied the slowdown across more frames.
-            float flReferenceFrametime = 1.0f / 70.0f;
-            float flFrametimeRatio = gpGlobals->frametime / flReferenceFrametime;
-
-            flRatio = pow(flRatio, flFrametimeRatio);
-
-            mv->m_vecVelocity.x *= flRatio;
-            mv->m_vecVelocity.y *= flRatio;
-        }
-    }
-
     AngleVectors(mv->m_vecViewAngles, &forward, &right, &up); // Determine movement angles
 
     CHandle<CBaseEntity> oldground;
@@ -1444,16 +1422,8 @@ bool CMomentumGameMovement::CheckJumpButton()
             m_pPlayer->UpdateLastAction(SurfInt::ACTION_JUMP);
     }
 
-    // stamina stuff (scroll/kz gamemode only)
     if (g_pGameModeSystem->GameModeIs(GAMEMODE_KZ))
     {
-        if (m_pPlayer->m_flStamina > 0)
-        {
-            float flRatio = (STAMINA_MAX - ((m_pPlayer->m_flStamina / 1000.0) * STAMINA_RECOVER_RATE)) / STAMINA_MAX;
-            mv->m_vecVelocity[2] *= flRatio;
-        }
-
-        m_pPlayer->m_flStamina = (STAMINA_COST_JUMP / STAMINA_RECOVER_RATE) * 1000.0;
     }
 
     // Add the accelerated hop movement
